@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Commander.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,11 +28,12 @@ namespace Commander
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddDbContext<CommanderContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("CommanderConnection")));
+      services.AddDbContext<CommanderContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("commanderConnection")));
 
       services.AddControllers();
 
-      services.AddScoped<ICommanderRepo, MockCommanderRepo>();
+      services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+      services.AddScoped<ICommanderRepo, SqlCommanderRepo>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
