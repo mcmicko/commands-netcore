@@ -20,8 +20,6 @@ namespace Commander.Controllers
       _mapper = mapper;
     }
 
-    // private readonly MockCommanderRepo _repository = new MockCommanderRepo();
-
     [HttpGet]
     public ActionResult<IEnumerable<CommandReadDto>> GetAllCommands()
     {
@@ -50,6 +48,20 @@ namespace Commander.Controllers
 
       return CreatedAtRoute(nameof(GetCommandById), new { Id = commandReadDto.Id }, commandReadDto);
       // return Ok(commandReadDto);
+    }
+
+    [HttpPut("{id}")]
+    public ActionResult UpdateCommand(int id, CommandUpdateDto commandUpdateDto)
+    {
+      var commandModelFromRepo = _repository.GetCommandById(id);
+      if (commandModelFromRepo == null)
+        return NotFound();
+
+      _mapper.Map(commandUpdateDto, commandModelFromRepo);
+      _repository.UpdateCommand(commandModelFromRepo);
+      _repository.SaveChanges();
+
+      return NoContent();
     }
   }
 }
